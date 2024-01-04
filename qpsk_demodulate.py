@@ -1,15 +1,21 @@
 import numpy as np
 import scipy.io.wavfile as wav
 
+from qpsk_modulate import qpsk_modulate
+
 
 SIGNAL_FREQ = 20000
-AMPLITUDE = 1 / np.sqrt(2)
+AMPLITUDE = 1000 / np.sqrt(2)
 BIT_DURATION = 0.025
+SAMPLE_RATE = 48000
+PREAMBLE = '01010101010111011011010000101011010000101'
 
 
 def qpsk_demodulate(wav_filename, signal_freq, bit_duration):
     sample_rate, signal = wav.read(wav_filename)
     samples_per_bit = int(sample_rate * bit_duration)
+
+    signal = detect_preamble(signal)
 
     binary_sequence = ''
 
@@ -50,3 +56,20 @@ def qpsk_demodulate(wav_filename, signal_freq, bit_duration):
         binary_sequence += bits
 
     return binary_sequence
+
+
+def detect_preamble(signal):
+    threshold = 1000000
+    max_correlation = 0
+    preamble_signal = qpsk_modulate(PREAMBLE, SAMPLE_RATE, SIGNAL_FREQ, AMPLITUDE, BIT_DURATION)
+    for i in range(0, len(signal) - len(preamble_signal)):
+        current_signal = signal[i:i + len(preamble_signal)]
+        correlation = np.mean(np.correlate(current_signal, preamble_signal, mode='valid'))
+        if max_correlation < correlation:
+            max_correlation = correlation
+        if correlation > threshold:
+            print('PREAMBLE FOUND AT ' + str(i))
+            return signal[i + len(preamble_signal):]
+    print('PREAMBLE NOT FOUND')
+    print(max_correlation)
+    return signal

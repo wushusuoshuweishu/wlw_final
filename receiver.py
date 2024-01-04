@@ -18,9 +18,9 @@ BIT_DURATION = 0.025
 
 audio = pyaudio.PyAudio()
 
-demodulated_binary_data = qpsk_demodulate('./qpsk_signal.wav', SIGNAL_FREQ, BIT_DURATION)
-print(demodulated_binary_data)
-exit(0)
+# demodulated_binary_data = qpsk_demodulate('./qpsk_signal.wav', SIGNAL_FREQ, BIT_DURATION)
+# print(demodulated_binary_data)
+# exit(0)
 
 try:
     # 打开音频输入流
@@ -58,6 +58,6 @@ except KeyboardInterrupt:
 finally:
     audio.terminate()
 
-demodulated_binary_data = qpsk_demodulate('./qpsk_signal.wav', SIGNAL_FREQ, BIT_DURATION)
+demodulated_binary_data = qpsk_demodulate(OUTPUT_FILENAME, SIGNAL_FREQ, BIT_DURATION)
 
 print(demodulated_binary_data)

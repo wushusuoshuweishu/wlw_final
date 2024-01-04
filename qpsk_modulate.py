@@ -3,7 +3,7 @@ import numpy as np
 
 SAMPLE_RATE = 48000
 SIGNAL_FREQ = 20000
-AMPLITUDE = 1 / np.sqrt(2)
+AMPLITUDE = 1000 / np.sqrt(2)
 BIT_DURATION = 0.025
 
 
