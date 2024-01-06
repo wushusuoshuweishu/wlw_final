@@ -2,7 +2,8 @@ import pyaudio
 import wave
 import sys
 
-from qpsk_demodulate import qpsk_demodulate
+# from qpsk_demodulate import qpsk_demodulate
+from demodulate_pulse import demodulate_pulse
 
 
 # 配置录音参数
@@ -16,11 +17,20 @@ OUTPUT_FILENAME = "output.wav"
 SIGNAL_FREQ = 20000
 BIT_DURATION = 0.025
 
+
+def binary_to_string(binary_string):
+    str_data = ''.join(chr(int(binary_string[i:i+8], 2)) for i in range(0, len(binary_string), 8))
+    return str_data
+
+
 audio = pyaudio.PyAudio()
 
 # demodulated_binary_data = qpsk_demodulate('./qpsk_signal.wav', SIGNAL_FREQ, BIT_DURATION)
 # print(demodulated_binary_data)
 # exit(0)
+demodulated_binary = demodulate_pulse(OUTPUT_FILENAME, 0.01)
+print(binary_to_string(demodulated_binary))
+exit(0)
 
 try:
     # 打开音频输入流
@@ -58,6 +68,11 @@ except KeyboardInterrupt:
 finally:
     audio.terminate()
 
-demodulated_binary_data = qpsk_demodulate(OUTPUT_FILENAME, SIGNAL_FREQ, BIT_DURATION)
 
-print(demodulated_binary_data)
+# demodulated_binary_data = qpsk_demodulate(OUTPUT_FILENAME, SIGNAL_FREQ, BIT_DURATION)
+
+# print(demodulated_binary_data)
+
+demodulated_binary = demodulate_pulse(OUTPUT_FILENAME, 0.01)
+
+print(binary_to_string(demodulated_binary))
